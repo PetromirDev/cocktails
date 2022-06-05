@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -6,22 +6,22 @@ const Container = styled.div`
   width: 100%;
   padding: 20px;
   margin: 0 auto;
-`
+`;
 
 const Center = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 const Column = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 const Between = styled(Center)`
   justify-content: space-between;
-`
+`;
 
 const CocktailsWrapper = styled.div`
   display: grid;
@@ -34,6 +34,6 @@ const CocktailsWrapper = styled.div`
   @media (max-width: 720px) {
     grid-template-columns: 1fr;
   }
-`
+`;
 
-export { Container, Center, Column, Between, CocktailsWrapper }
+export { Container, Center, Column, Between, CocktailsWrapper };

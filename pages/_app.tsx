@@ -1,7 +1,7 @@
-import type { AppProps } from "next/app"
-import React from "react"
+import type { AppProps } from "next/app";
+import React from "react";
 // Styles
-import GlobalStyle from "../styles/globalStyles"
+import GlobalStyle from "../styles/globalStyles";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <GlobalStyle />
       <Component {...pageProps} />
     </React.Fragment>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;

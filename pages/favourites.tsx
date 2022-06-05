@@ -1,40 +1,44 @@
-import { NextPage } from "next"
-import React, { useEffect, useState } from "react"
-import styled from "styled-components"
+import { NextPage } from "next";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 // Helpers
-import { getCocktailDetails } from "../helpers/api/getCocktailDetails"
-import { getFavourites } from "../helpers/getFavourites"
+import { getCocktailDetails } from "../helpers/api/getCocktailDetails";
+import { getFavourites } from "../helpers/getFavourites";
 // Components
-import Navbar from "../components/utils/navbar"
-import CocktailCard from "../components/cocktail/cocktailCard"
-import CocktailDetails from "../components/cocktail/cocktailDetails"
+import Navbar from "../components/utils/navbar";
+import CocktailCard from "../components/cocktail/cocktailCard";
+import CocktailDetails from "../components/cocktail/cocktailDetails";
 // Styles
-import { Center, CocktailsWrapper, Container } from "../styles/utils"
+import { Center, CocktailsWrapper, Container } from "../styles/utils";
 // Types
-import { CocktailDetailsApiType } from "../types/Cocktail"
-import CocktailStatus from "../components/cocktail/cocktailStatus"
-import Footer from "../components/utils/footer"
+import { CocktailDetailsApiType } from "../types/Cocktail";
+import CocktailStatus from "../components/cocktail/cocktailStatus";
+import Footer from "../components/utils/footer";
 
 const Favourites: NextPage = () => {
-  const [cocktails, setCocktails] = useState<CocktailDetailsApiType[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [selectedCocktail, setSelectedCocktail] = useState<null | CocktailDetailsApiType>(null)
+  const [cocktails, setCocktails] = useState<CocktailDetailsApiType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedCocktail, setSelectedCocktail] = useState<null | CocktailDetailsApiType>(null);
 
   useEffect(() => {
-    setCocktails([])
-    const favourites = getFavourites()
+    setCocktails([]);
+    const favourites = getFavourites();
     for (let i = 0; i < favourites.length; i++) {
-      const id = favourites[i].id
-      getCocktailDetails(
-        `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`,
-      ).then((cocktail) => {
-        setCocktails((prev) => [...prev, cocktail])
-        setIsLoading(false)
-      })
+      const id = favourites[i].id;
+      getCocktailDetails(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
+        .then((cocktail) => {
+          setCocktails((prev) => [...prev, cocktail]);
+          if (i === favourites.length - 1) {
+            setIsLoading(false);
+          }
+        })
+        .catch(() => {
+          alert("Failed to show cocktail");
+        });
     }
-  }, [])
+  }, []);
 
-  const removeSelectedCocktail = () => setSelectedCocktail(null)
+  const removeSelectedCocktail = () => setSelectedCocktail(null);
 
   return (
     <Container>
@@ -46,16 +50,11 @@ const Favourites: NextPage = () => {
           image={selectedCocktail.strDrinkThumb}
           ingredients={selectedCocktail.ingredients}
           handleClose={removeSelectedCocktail}
-          render={
-            <CocktailStatus
-              dateModified={selectedCocktail.dateModified}
-              id={selectedCocktail.idDrink}
-            />
-          }
+          render={<CocktailStatus dateModified={selectedCocktail.dateModified} id={selectedCocktail.idDrink} />}
         />
       ) : null}
       <Navbar />
-      {!isLoading && cocktails.length !== 0 ? (
+      {!isLoading && cocktails.length > 0 ? (
         <React.Fragment>
           <FavouriteHeader>Your favourite cocktails</FavouriteHeader>
           <CocktailsWrapper>
@@ -78,10 +77,10 @@ const Favourites: NextPage = () => {
         </EmptyWrapper>
       ) : null}
     </Container>
-  )
-}
+  );
+};
 
-export default Favourites
+export default Favourites;
 
 const FavouriteHeader = styled.h1`
   font-size: 4rem;
@@ -90,13 +89,13 @@ const FavouriteHeader = styled.h1`
   @media (max-width: 800px) {
     font-size: 2.5rem;
   }
-`
+`;
 
 const EmptyWrapper = styled(Center)`
   flex-direction: column;
   margin: 0 auto;
   padding: 40px;
-`
+`;
 
 const EmptyLabel = styled.h1`
   text-align: center;
@@ -107,7 +106,7 @@ const EmptyLabel = styled.h1`
     font-size: 2.5rem;
     margin-left: 10px;
   }
-`
+`;
 
 const EmptyImage = styled.img`
   max-width: 400px;
@@ -115,4 +114,4 @@ const EmptyImage = styled.img`
   @media (max-width: 800px) {
     max-width: 300px;
   }
-`
+`;

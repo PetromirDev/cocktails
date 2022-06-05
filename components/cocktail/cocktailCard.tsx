@@ -1,17 +1,17 @@
-import { FC } from "react"
-import styled from "styled-components"
+import { FC } from "react";
+import styled from "styled-components";
 // Types
-import { CocktailCardType } from "../../types/Cocktail"
+import { CocktailCardType } from "../../types/Cocktail";
 
 const CocktailCard: FC<CocktailCardType> = ({ name, image, id, onClick }) => {
   return (
     <Card image={image} onClick={onClick}>
       <Name>{name}</Name>
     </Card>
-  )
-}
+  );
+};
 
-export default CocktailCard
+export default CocktailCard;
 
 const Card = styled.div<{ image: string }>`
   position: relative;
@@ -23,7 +23,7 @@ const Card = styled.div<{ image: string }>`
   background-position: center;
   background-size: contain;
   cursor: pointer;
-`
+`;
 
 const Name = styled.h2`
   position: absolute;
@@ -36,4 +36,4 @@ const Name = styled.h2`
   background-color: #fff;
   font-size: 1.2rem;
   text-align: center;
-`
+`;

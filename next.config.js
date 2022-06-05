@@ -3,8 +3,8 @@ const nextConfig = {
   reactStrictMode: false,
   compiler: {
     // ssr and displayName are configured by default
-    styledComponents: true,
-  },
-}
+    styledComponents: true
+  }
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

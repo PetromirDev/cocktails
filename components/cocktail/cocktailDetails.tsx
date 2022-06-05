@@ -1,54 +1,54 @@
-import React, { FC, useState } from "react"
-import styled from "styled-components"
+import React, { FC, useState } from "react";
+import styled from "styled-components";
 // Helpers
-import { getFavourites } from "../../helpers/getFavourites"
+import { getFavourites } from "../../helpers/getFavourites";
 // Styles
-import { Center } from "../../styles/utils"
+import { Center } from "../../styles/utils";
 
 const CocktailDetails: FC<{
-  id: string
-  name: string
-  instructions: string
-  image: string
-  ingredients: string[]
-  handleClose: () => void
-  render?: React.ReactElement | React.ReactElement[]
+  id: string;
+  name: string;
+  instructions: string;
+  image: string;
+  ingredients: string[];
+  handleClose: () => void;
+  render?: React.ReactElement | React.ReactElement[];
 }> = ({ id, name, instructions, image, ingredients, handleClose, render }) => {
   const [isFavourite, setIsFavourite] = useState<boolean>(() => {
-    const favourites = getFavourites()
+    const favourites = getFavourites();
     if (favourites.find((favourite) => favourite.id === id)) {
-      return true
+      return true;
     }
-    return false
-  })
+    return false;
+  });
 
   const addToFavourites = () => {
     if (!isFavourite) {
       const favourite = {
         id: id,
-        dateAdded: Date.now(),
-      }
-      const favourites = getFavourites()
+        dateAdded: Date.now()
+      };
+      const favourites = getFavourites();
 
-      favourites.push(favourite)
-      setIsFavourite(true)
+      favourites.push(favourite);
+      setIsFavourite(true);
 
-      localStorage.setItem("favourites", JSON.stringify(favourites))
+      localStorage.setItem("favourites", JSON.stringify(favourites));
     }
-  }
+  };
 
   const removeFromFavourites = () => {
     if (isFavourite) {
-      let favourites = getFavourites()
+      let favourites = getFavourites();
 
       if (favourites.find((favourite) => favourite.id === id)) {
-        favourites = favourites.filter((favourite) => favourite.id !== id)
-        setIsFavourite(false)
+        favourites = favourites.filter((favourite) => favourite.id !== id);
+        setIsFavourite(false);
       }
 
-      localStorage.setItem("favourites", JSON.stringify(favourites))
+      localStorage.setItem("favourites", JSON.stringify(favourites));
     }
-  }
+  };
 
   return (
     <DetailsWrapper onClick={handleClose}>
@@ -56,12 +56,14 @@ const CocktailDetails: FC<{
         <MobileCloseIcon
           onClick={handleClose}
           src="https://www.freeiconspng.com/thumbs/close-icon/close-icon-39.png"
+          alt="close-mobile"
         />
         <Image src={image} alt={name} />
         <Body>
           <CloseIcon
             onClick={handleClose}
             src="https://www.freeiconspng.com/thumbs/close-icon/close-icon-39.png"
+            alt="close"
           />
           <Name>{name}</Name>
           <Instructions>{instructions}</Instructions>
@@ -74,22 +76,18 @@ const CocktailDetails: FC<{
           </Ingredients>
           <Separator />
           {!isFavourite ? (
-            <AddToFavouritesBtn onClick={addToFavourites}>
-              Add to favourites
-            </AddToFavouritesBtn>
+            <AddToFavouritesBtn onClick={addToFavourites}>Add to favourites</AddToFavouritesBtn>
           ) : (
-            <RemoveFromFavouritesBtn onClick={removeFromFavourites}>
-              Remove from favourites
-            </RemoveFromFavouritesBtn>
+            <RemoveFromFavouritesBtn onClick={removeFromFavourites}>Remove from favourites</RemoveFromFavouritesBtn>
           )}
           {render}
         </Body>
       </Details>
     </DetailsWrapper>
-  )
-}
+  );
+};
 
-export default CocktailDetails
+export default CocktailDetails;
 
 const DetailsWrapper = styled(Center)`
   position: fixed;
@@ -103,7 +101,7 @@ const DetailsWrapper = styled(Center)`
   @media (max-width: 800px) {
     padding: 20px;
   }
-`
+`;
 
 const Details = styled.div`
   display: flex;
@@ -120,7 +118,7 @@ const Details = styled.div`
   @media (max-width: 800px) {
     max-height: 100vh;
   }
-`
+`;
 
 const Image = styled.img`
   flex: 1;
@@ -129,7 +127,7 @@ const Image = styled.img`
   @media (max-width: 1150px) {
     max-width: 300px;
   }
-`
+`;
 
 const Body = styled.div`
   overflow: auto;
@@ -143,7 +141,7 @@ const Body = styled.div`
     padding: 20px;
     text-align: center;
   }
-`
+`;
 
 const Name = styled.h2`
   font-size: 3rem;
@@ -151,7 +149,7 @@ const Name = styled.h2`
   @media (max-width: 1150px) {
     max-width: 100%;
   }
-`
+`;
 
 const Instructions = styled.p`
   margin-top: 15px;
@@ -161,12 +159,12 @@ const Instructions = styled.p`
   @media (max-width: 1150px) {
     max-width: 100%;
   }
-`
+`;
 
 const Separator = styled.hr`
   margin: 20px 0;
   border-color: transparent;
-`
+`;
 
 const Label = styled.h3`
   font-size: 1.6rem;
@@ -174,31 +172,31 @@ const Label = styled.h3`
   @media (max-width: 1150px) {
     font-size: 1.8rem;
   }
-`
+`;
 
 const Ingredients = styled.ul`
   padding-left: 40px;
   @media (max-width: 1150px) {
     padding-left: 0;
   }
-`
+`;
 
 const Ingredient = styled.li`
   font-size: 1.2rem;
   margin-top: 10px;
-`
+`;
 
 const AddToFavouritesBtn = styled.button`
   border: 1px solid black;
   background-color: #fff;
   color: #000;
-`
+`;
 
 const RemoveFromFavouritesBtn = styled.button`
   border: 1px solid black;
   background-color: #000;
   color: #fff;
-`
+`;
 
 const CloseIcon = styled.img`
   display: block;
@@ -209,7 +207,7 @@ const CloseIcon = styled.img`
   @media (max-width: 1150px) {
     display: none;
   }
-`
+`;
 
 const MobileCloseIcon = styled(CloseIcon)`
   display: none;
@@ -220,4 +218,4 @@ const MobileCloseIcon = styled(CloseIcon)`
   @media (max-width: 1150px) {
     display: block;
   }
-`
+`;
