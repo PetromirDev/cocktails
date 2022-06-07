@@ -33,7 +33,7 @@ const CocktailDetails: FC<{
       favourites.push(favourite);
       setIsFavourite(true);
 
-      localStorage.setItem("favourites", JSON.stringify(favourites));
+      localStorage.setItem("favourite-cocktails", JSON.stringify(favourites));
     }
   };
 
@@ -46,7 +46,8 @@ const CocktailDetails: FC<{
         setIsFavourite(false);
       }
 
-      localStorage.setItem("favourites", JSON.stringify(favourites));
+      localStorage.setItem("favourite-cocktails", JSON.stringify(favourites));
+      window.dispatchEvent(new Event("favourites-remove"));
     }
   };
 

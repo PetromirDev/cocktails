@@ -8,34 +8,52 @@ import { getFavourites } from "../helpers/getFavourites";
 import Navbar from "../components/utils/navbar";
 import CocktailCard from "../components/cocktail/cocktailCard";
 import CocktailDetails from "../components/cocktail/cocktailDetails";
+import CocktailStatus from "../components/cocktail/cocktailStatus";
+import Footer from "../components/utils/footer";
 // Styles
 import { Center, CocktailsWrapper, Container } from "../styles/utils";
 // Types
 import { CocktailDetailsApiType } from "../types/Cocktail";
-import CocktailStatus from "../components/cocktail/cocktailStatus";
-import Footer from "../components/utils/footer";
 
 const Favourites: NextPage = () => {
   const [cocktails, setCocktails] = useState<CocktailDetailsApiType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedCocktail, setSelectedCocktail] = useState<null | CocktailDetailsApiType>(null);
 
-  useEffect(() => {
+  const initialFetch = () => {
     setCocktails([]);
     const favourites = getFavourites();
-    for (let i = 0; i < favourites.length; i++) {
-      const id = favourites[i].id;
-      getCocktailDetails(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
-        .then((cocktail) => {
-          setCocktails((prev) => [...prev, cocktail]);
-          if (i === favourites.length - 1) {
-            setIsLoading(false);
-          }
-        })
-        .catch(() => {
-          alert("Failed to show cocktail");
-        });
+    if (favourites.length > 0) {
+      for (let i = 0; i < favourites.length; i++) {
+        const id = favourites[i].id;
+        getCocktailDetails(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
+          .then((cocktail) => {
+            setCocktails((prev) => [...prev, cocktail]);
+            if (i === favourites.length - 1) {
+              setIsLoading(false);
+            }
+          })
+          .catch(() => {
+            alert("Failed to show cocktail");
+          });
+      }
+    } else {
+      setIsLoading(false);
     }
+  };
+
+  const storageListener = () => {
+    initialFetch();
+  };
+
+  useEffect(() => {
+    window.addEventListener("favourites-remove", storageListener);
+
+    initialFetch();
+
+    return () => {
+      window.removeEventListener("favourites-remove", storageListener);
+    };
   }, []);
 
   const removeSelectedCocktail = () => setSelectedCocktail(null);

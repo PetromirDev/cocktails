@@ -6,6 +6,8 @@ import axios from "axios";
 import Navbar from "../components/utils/navbar";
 import CocktailCard from "../components/cocktail/cocktailCard";
 import CocktailDetails from "../components/cocktail/cocktailDetails";
+import Footer from "../components/utils/footer";
+import Search from "../components/home/search";
 // Helpers
 import { getCocktailDetails } from "../helpers/api/getCocktailDetails";
 // Styles
@@ -13,12 +15,10 @@ import { CocktailsWrapper, Container } from "../styles/utils";
 // Types
 import type { NextPage } from "next";
 import { CocktailApiType, CocktailDetailsApiType } from "../types/Cocktail";
-import Footer from "../components/utils/footer";
 
 const Home: NextPage = () => {
   const [cocktails, setCocktails] = useState<CocktailApiType[]>([]);
   const [selectedCocktail, setSelectedCocktail] = useState<null | CocktailDetailsApiType>(null);
-  const [search, setSearch] = useState<string>("");
   const [last, setLast] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -33,24 +33,6 @@ const Home: NextPage = () => {
     handleFetch();
   }, []);
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
-  const handleSearch = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setIsLoading(true);
-      setLast(0);
-      if (search !== "") {
-        axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?c=Cocktail&s=${search}`).then((res) => {
-          setCocktails(res.data.drinks);
-        });
-      } else {
-        handleFetch();
-      }
-      setIsLoading(false);
-    }
-  };
-
   const handleGetCocktailDetails = (id: string) =>
     getCocktailDetails(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
       .then((cocktail) => setSelectedCocktail(cocktail))
@@ -64,6 +46,19 @@ const Home: NextPage = () => {
   const removeSelectedCocktail = () => setSelectedCocktail(null);
 
   const handlePagination = () => setLast((last) => last + 20);
+
+  const handleSearch = (search: string) => {
+    setIsLoading(true);
+    setLast(0);
+    if (search !== "") {
+      axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?c=Cocktail&s=${search}`).then((res) => {
+        setCocktails(res.data.drinks);
+      });
+    } else {
+      handleFetch();
+    }
+    setIsLoading(false);
+  };
 
   return (
     <Container>
@@ -92,18 +87,13 @@ const Home: NextPage = () => {
         </HeroBody>
         <Cocktail src="/images/hero-cocktail2.jpg" alt="cocktail2" />
       </Hero>
-      <Searchbar
-        placeholder="Search for a cocktail"
-        value={search}
-        onChange={handleSearchChange}
-        onKeyDown={handleSearch}
-      />
-      {!isLoading ? (
+      <Search handleSearch={handleSearch} />
+      {!isLoading && cocktails !== null && cocktails.length !== 0 ? (
         <InfiniteScroll
           dataLength={cocktails.slice(0, last + 20).length}
           next={handlePagination}
           hasMore={cocktails.length > last + 1}
-          loader={null}
+          loader={<p>...</p>}
         >
           <CocktailsWrapper>
             {cocktails.slice(0, last + 20).map((cocktail) => (
@@ -117,7 +107,9 @@ const Home: NextPage = () => {
             ))}
           </CocktailsWrapper>
         </InfiniteScroll>
-      ) : null}
+      ) : (
+        <Text>We didn&apos;t manage to find a cocktail with this name</Text>
+      )}
       <Footer />
     </Container>
   );
@@ -173,19 +165,4 @@ const Logo = styled.span`
 
 const HeroBody = styled.div`
   margin: 0 20px;
-`;
-
-const Searchbar = styled.input`
-  display: block;
-  margin: 0 auto;
-  margin-bottom: 40px;
-  font-size: 1.2rem;
-`;
-
-const LoadMoreBtn = styled.button`
-  display: block;
-  margin: 20px auto;
-  background-color: transparent;
-  text-align: center;
-  font-size: 1.5rem;
 `;
